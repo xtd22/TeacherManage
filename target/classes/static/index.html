@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/login.html" >&nbsp;教师管理系统</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav" style="font-size:20px">
+                <li ><a href="/index.html">主页</a></li>
+                <li class="active"><a href="/manage.html">教师管理</a></li>
+                <li class="active"><a href="/course.html">课程分配</a></li>
+                <li class="active"><a href="/">消息通知</a></li>
+                <li class="active"><a href="/">操作记录</a></li>
+                <li class="ml-auto">
+                    <a href="#" id="userNameOutput" style="float: right;"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div style="height:150px"></div>
+<div class="row">
+
+<!--    <div id="userNameOutput"></div>-->
+<script>
+
+    var cookieArr = document.cookie.split("; ")
+    //console.log(cookieArr)
+    var token = null;
+    cookieArr.forEach(function(item,index){
+        //console.log("item:",item);
+        //console.log("index:",index);
+        if (item.substring(0,6) === "Token="){
+            console.log(item.substring(0,6))
+            token = item.substring(6);
+            console.log("item:",item);
+        }
+    })
+
+    var headers = new Headers({
+    	"Content-Type": "application/json", // 设置Content-Type为application/json
+    	"Token":token
+    });
+
+    fetch("/view/index", {
+    	method: 'post',
+    	headers: headers,
+    	//body: {"token":token} // 将 JSON 字符串作为请求的主体发送到服务器
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+
+        }
+        return response.json(); // 将响应解析为JSON格式
+    })
+        .then(data => {
+            var code = data.code;
+            if (code === 1){
+                var message = data.message;
+                console.log(message);
+                var userNameOutput = document.getElementById("userNameOutput"); // 获取用于显示的<div>元素
+                userNameOutput.innerHTML = message; // 将变量值插入到<div>元素中
+            }
+            if (code === 200){
+                // 在这里处理获取到的数据
+                console.log(data); // 输出到控制台
+                // 现在您可以访问data对象中的属性，例如 data.userId, data.userCode, data.userName
+                var userName = data.data.userName;
+                console.log(data.data.userName);
+                var userNameOutput = document.getElementById("userNameOutput"); // 获取用于显示的<div>元素
+                userNameOutput.innerHTML = "当前用户：" + userName; // 将变量值插入到<div>元素中
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+</script>
+</body>
+</html>

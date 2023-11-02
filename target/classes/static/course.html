@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/login.html" >&nbsp;教师管理系统</a>
+    </div>
+    <div>
+      <ul class="nav navbar-nav" style="font-size:20px">
+        <li ><a href="/index.html">主页</a></li>
+        <li class="active"><a href="/manage.html">教师管理</a></li>
+        <li class="active"><a href="/course.html">课程分配</a></li>
+        <li class="active"><a href="/">消息通知</a></li>
+        <li class="active"><a href="/">操作记录</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-5">
+    <table id="data-table" class="table table-striped"></table>
+    <div id="pagination"></div>
+  </div>
+  <div class="col-md-1"></div>
+  <div class="col-md-4">
+      <div class="row">
+        <div class="col-md-9">
+          <input type="text" class="form-control" id="inputId" name="inputId" style="font-size: 25px;height:50px"
+                 placeholder="请输入教师编号">
+        </div>
+        <div class="col-md-3">
+          <button type="button" class="btn btn-danger" style="font-size: 25px;height:50px"
+                  id="openUpdateModalButton"
+                  onclick="searchTeacherOpenModal(inputId)"
+          >查询</button>
+        </div>
+      </div>
+    </div>
+
+  <div class="col-md-1"></div>
+
+</div>
+
+<div class="modal fade" id="setCourseModal" tabindex="-1" role="dialog" aria-labelledby="setCourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="setCourseModalLabel">课程分配</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h3>教师详情</h3>
+        <p>教师编号: <span id="modalTeacherCode"></span></p>
+        <p>教师姓名: <span id="modalTeacherName"></span></p>
+        <p>所属部门: <span id="modalTeacherDepartment"></span></p>
+        <p>分配课程: <div id="courseSelection"></div></p>
+      </div>
+      <div class="modal-footer">
+        <button id="saveChanges" class="btn btn-primary" onclick="updateTeacherCourse()">保存</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function searchTeacherOpenModal(teacherCode){
+
+    var inputId = teacherCode.value;
+
+    // 将 JavaScript 对象转换为 JSON 字符串
+    var jsonData = JSON.stringify(inputId);
+    console.log(jsonData)
+
+    var headers = new Headers({
+      "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+    });
+
+    if (inputId.trim() === "" || inputId.trim() === null){
+      alert("请输入要查询的教师编号")
+    }else {
+      fetch("/manage/search_teacher",{
+        method:'post',
+        headers: headers,
+        body: jsonData // 将 JSON 字符串作为请求的主体发送到服务器
+      }).then(response =>{
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      }).then(data =>{
+        if (data.data === null){
+          alert("请输入正确的教师编号")
+        }else{
+          var code = data.data.teacherCode;
+          var tname = data.data.teacherName;
+          var td = data.data.teacherDepartment;
+          console.log(code,tname,td);
+          openModal(code,tname,td);
+        }
+
+      })
+    }
+  }
+
+</script>
+
+<script>
+function updateTeacherCourse(){
+  var teacherCode = document.getElementById("modalTeacherCode").textContent;
+  //console.log("教师编号："+teacherCode);
+
+  // 获取所有名为 "courses[]" 的多选按钮
+  const selectedCourses = document.querySelectorAll('input[name="courses[]"]:checked');
+
+  // 创建一个空数组，以存储选中的课程值
+  const selectedCourseValues = [];
+
+  // 迭代选中的多选按钮，将其值添加到数组
+  selectedCourses.forEach(courseCheckbox => {
+    selectedCourseValues.push(courseCheckbox.value);
+  });
+
+  var tData = {
+    teacherCode: teacherCode,
+    courses:selectedCourseValues
+  };
+
+  // 将 JavaScript 对象转换为 JSON 字符串
+  var jsonData = JSON.stringify(tData);
+
+  var headers = new Headers({
+    "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+  });
+
+  // 打印选中的课程值
+  //console.log("已选中的课程值：", selectedCourseValues);
+  fetch("/manage/update-course",{
+    method: 'post',
+    headers: headers,
+    body: jsonData // 将 JSON 字符串作为请求的主体发送到服务器
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+
+  }).then(data =>{
+    alert(data.message)
+
+  })
+
+}
+
+</script>
+
+
+
+<script>
+  teacherList(1)
+  function teacherList(page)
+  {
+    var cookieArr = document.cookie.split("; ")
+    console.log(cookieArr)
+    var token = null;
+    cookieArr.forEach(function(item,index){
+      //console.log("item:",item);
+      //console.log("index:",index);
+      if (item.substring(0,6) === "Token="){
+        //console.log(item.substring(0,6))
+        token = item.substring(6);
+        //console.log("item:",item);
+      }
+    })
+
+    var headers = new Headers({
+      "Content-Type": "application/json;charset=utf-8", // 设置Content-Type为application/json
+      "Token": token
+    });
+
+    var body = JSON.stringify({
+      "pageNum": page,
+      "pageSize": 10,
+      "totalNum": 0,
+      "pageCount": 0,
+      "limitIndex": 1,
+      "resultList": [
+        {}
+      ]
+    })
+
+    fetch("/manage/teacher-list", {
+      method: 'post',
+      headers: headers,
+      body:body
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+
+    }).then(data => {
+
+      // 获取对应表格元素
+      var table = document.getElementById("data-table");
+
+// 创建表头
+      var tableHeader = "<tr><th>教师编号 </th><th>教师姓名 <th>所属部门、院系 </tr>";
+
+// 初始化表格内容
+      var tableContent = "";
+
+      var jsonData = data.data.resultList;
+
+
+// 遍历 JSON 数据并将其添加到表格内容中
+      for (var i = 0; i < jsonData.length; i++) {
+        tableContent += "<tr>";
+        tableContent += "<td>" + jsonData[i].teacherCode + "</td>";
+        tableContent += "<td>" + jsonData[i].teacherName + "</td>";
+        tableContent += "<td>" + jsonData[i].teacherDepartment + "</td>";
+
+        tableContent += '<td><button class="btn btn-primary" onclick="openModal(\'' + jsonData[i].teacherCode + '\', \'' +
+                jsonData[i].teacherName + '\', \'' + jsonData[i].teacherDepartment + '\')">分配课程</button></td>';
+        tableContent += "</tr>";
+      }
+
+// 将表头和表格内容添加到表格中
+      table.innerHTML = tableHeader + tableContent;
+
+// 更新分页按钮
+      updatePagination(data.data.pageNum, data.data.pageCount);
+
+
+    })
+  }
+
+  // 更新分页按钮
+  function updatePagination(currentPage, pageCount) {
+    var pagination = document.getElementById("pagination");
+    var paginationContent = "";
+
+    // 添加“上一页”按钮
+    if (currentPage > 1) {
+      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="teacherList(' + (currentPage - 1) + ')">上一页&nbsp;</a></li>';
+    }
+
+    // 添加页数按钮
+    for (var i = 1; i <= pageCount; i++) {
+      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="teacherList(' + i + ')">' + i + '&nbsp;</a></li>';
+    }
+
+    // 添加“下一页”按钮
+    if (currentPage < pageCount) {
+      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="teacherList(' + (currentPage + 1) + ')">&nbsp;下一页</a></li>';
+    }
+
+    pagination.innerHTML = " <td colspan=\"10\">" +
+            "<ul class=\"pagination\">"
+            +paginationContent+
+            "</ul>" +
+            "</td>";
+  }
+
+  function openModal(teacherCode, teacherName, teacherDepartment) {
+
+    // 获取模态框中的元素
+    var modalTeacherCode = document.getElementById("modalTeacherCode");
+    var modalTeacherName = document.getElementById("modalTeacherName");
+    var modalTeacherDepartment = document.getElementById("modalTeacherDepartment");
+    //console.log(modalTeacherDepartment.textContent)
+
+
+    // 将行数据填充到模态框中的元素
+    modalTeacherCode.innerHTML = teacherCode;
+    modalTeacherName.innerHTML = teacherName;
+    modalTeacherDepartment.innerHTML = teacherDepartment;
+
+    // 获取模态框元素
+    var modal = document.getElementById("setCourseModal");
+
+    var teacherData = {
+      teacherCode: teacherCode,
+      teacherName: teacherName,
+      teacherDepartment: teacherDepartment
+    };
+
+    // 将 JavaScript 对象转换为 JSON 字符串
+    var jsonData = JSON.stringify(teacherData);
+
+    var headers = new Headers({
+      "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+    });
+
+
+
+    fetch("/manage/get-course",{
+      method: 'post',
+      headers: headers,
+      body: jsonData // 将 JSON 字符串作为请求的主体发送到服务器
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+
+    }).then(data =>{
+      if (data.code === 210){
+        alert(data.message)
+      }
+      const courses = data.data.course;
+      const teacherCourses = data.data.currentTeacherCourse;
+      // console.log(courses)
+      // console.log(teacherCourses)
+
+      // 获取模态框中的课程选择容器
+      const courseSelection = document.getElementById("courseSelection");
+
+      // 清空 courseSelection 内的子元素
+      while (courseSelection.firstChild) {
+        courseSelection.removeChild(courseSelection.firstChild);
+      }
+
+
+
+      // 遍历课程数据并创建多选按钮
+      courses.forEach(course => {
+        const label = document.createElement("label");
+        label.className = "checkbox-label";
+
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.name = "courses[]"; // 为了提交选定的课程
+        input.value = course.cid;
+        // console.log("courses:"+input.value)
+        // console.log("teacherCourses:"+cid)
+        teacherCourses.forEach(cid =>{
+          if (input.value===String(cid)){
+            input.checked = true;
+          }
+        })
+
+        const text = document.createTextNode(course.course);
+        label.appendChild(input);
+        label.appendChild(text);
+        courseSelection.appendChild(label);
+
+        // 打开模态框
+        $("#setCourseModal").modal("show");
+
+      })
+
+
+    })
+
+
+  }
+
+</script>
+
+</body>
+</html>

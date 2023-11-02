@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/login.html" >&nbsp;教师管理系统</a>
+    </div>
+    <div>
+      <ul class="nav navbar-nav" style="font-size:20px">
+        <li ><a href="/index.html">主页</a></li>
+        <li class="active"><a href="/manage.html">教师管理</a></li>
+        <li class="active"><a href="/course.html">课程分配</a></li>
+        <li class="active"><a href="/">消息通知</a></li>
+        <li class="active"><a href="/">操作记录</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+    <!-- 添加教师信息的按钮 -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTeacherModal">
+      添加教师信息
+    </button>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteTeacherModal">
+      删除教师信息
+    </button>
+    <table id="data-table" class="table table-striped"></table>
+    <!-- 分页组件区域 -->
+    <div id="pagination"></div>
+  </div>
+
+  <div class="col-md-1">
+    <button type="button" class="btn btn-primary" onclick="teacherList(1)">刷新</button>
+  </div>
+
+</div>
+
+<div class="row">
+
+  <div class="col-md-1"></div>
+  <div class="col-md-5">
+    <div class="row">
+      <div class="col-md-9">
+        <input type="text" class="form-control" id="inputId" name="inputId" style="font-size: 25px;height:50px"
+               placeholder="请输入教师编号">
+      </div>
+      <div class="col-md-3">
+        <button type="button" class="btn btn-danger" style="font-size: 25px;height:50px"
+                id="openUpdateModalButton"
+                onclick="searchTeacher()"
+        >查询</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- 教师信息的模态框 -->
+<div class="modal fade" id="addTeacherModal" tabindex="-1" role="dialog" aria-labelledby="addTeacherModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTeacherModalLabel">添加教师信息</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- 编写表单以输入教师信息 -->
+        <form action="/manage/add_teacher" content="application/json" method="post">
+          <div class="form-group">
+            <label for="teacherCode">教师编码</label>
+            <input type="text" class="form-control" id="teacherCode" name="teacherCode" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherName">教师姓名</label>
+            <input type="text" class="form-control" id="teacherName" name="teacherName" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherTitle">教师职称</label>
+            <input type="text" class="form-control" id="teacherTitle" name="teacherTitle" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherEntryTime">入职时间</label>
+            <input type="text" class="form-control" id="teacherEntryTime" name="teacherEntryTime" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherGender">性别</label>
+            <input type="text" class="form-control" id="teacherGender" name="teacherGender" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherBirth">出生时间</label>
+            <input type="text" class="form-control" id="teacherBirth" name="teacherBirth" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherAdress">家庭地址</label>
+            <input type="text" class="form-control" id="teacherAdress" name="teacherAdress" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherEmail">邮箱</label>
+            <input type="text" class="form-control" id="teacherEmail" name="teacherEmail" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherPhone">电话号码</label>
+            <input type="text" class="form-control" id="teacherPhone" name="teacherPhone" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherDepartment">所属部门、院系</label>
+            <input type="text" class="form-control" id="teacherDepartment" name="teacherDepartment" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherSalary">薪水</label>
+            <input type="text" class="form-control" id="teacherSalary" name="teacherSalary" required>
+          </div>
+          <div class="form-group">
+            <label for="teacherQualificatons">学历</label>
+            <input type="text" class="form-control" id="teacherQualificatons" name="teacherQualificatons" required>
+          </div>
+
+          <!-- 在这里添加更多的教师信息字段 -->
+          <button type="button"  class="btn btn-primary" onclick="submitAddForm()">提交</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--教师删除模态框-->
+<div class="modal fade" id="deleteTeacherModal" tabindex="-1" role="dialog" aria-labelledby="deleteTeacherModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteTeacherModalLabel">删除教师信息</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- 编写表单以输入教师信息 -->
+        <form action="/manage/add_teacher" content="application/json" method="post">
+          <div class="form-group">
+            <label for="teacherCodeForDelete">教师编码</label>
+            <input type="text" class="form-control" id="teacherCodeForDelete" name="teacherCodeForDelete" required>
+          </div>
+
+
+          <!-- 在这里添加更多的教师信息字段 -->
+          <button type="button"  class="btn btn-primary" onclick="submitDeleteForm()">提交</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- 显示教师信息的模态框 -->
+<div class="modal fade" id="ShowTeacherModal" tabindex="-1" role="dialog" aria-labelledby="ShowTeacherModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ShowTeacherModalLabel">教师信息</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- 编写表单以输入教师信息 -->
+        <form action="/manage/Show_teacher" content="application/json" method="post">
+          <div class="form-group">
+            <label for="teacherCodeForShow">教师编码</label>
+            <input type="text" class="form-control" id="teacherCodeForShow" name="teacherCodeForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherNameForShow">教师姓名</label>
+            <input type="text" class="form-control" id="teacherNameForShow" name="teacherNameForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherTitleForShow">教师职称</label>
+            <input type="text" class="form-control" id="teacherTitleForShow" name="teacherTitleForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherEntryTimeForShow">入职时间</label>
+            <input type="text" class="form-control" id="teacherEntryTimeForShow" name="teacherEntryTimeForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherGenderForShow">性别</label>
+            <input type="text" class="form-control" id="teacherGenderForShow" name="teacherGenderForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherBirthForShow">出生时间</label>
+            <input type="text" class="form-control" id="teacherBirthForShow" name="teacherBirthForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherAdressForShow">家庭地址</label>
+            <input type="text" class="form-control" id="teacherAdressForShow" name="teacherAdressForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherEmailForShow">邮箱</label>
+            <input type="text" class="form-control" id="teacherEmailForShow" name="teacherEmailForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherPhoneForShow">电话号码</label>
+            <input type="text" class="form-control" id="teacherPhoneForShow" name="teacherPhoneForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherDepartmentForShow">所属部门、院系</label>
+            <input type="text" class="form-control" id="teacherDepartmentForShow" name="teacherDepartmentForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherSalaryForShow">薪水</label>
+            <input type="text" class="form-control" id="teacherSalaryForShow" name="teacherSalaryForShow" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="teacherQualificatonsForShow">学历</label>
+            <input type="text" class="form-control" id="teacherQualificatonsForShow" name="teacherQualificatonsForShow" required readonly>
+          </div>
+
+
+          <!-- 在这里添加更多的教师信息字段 -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="saveChanges" style="display: none;" onclick="submitUpdateForm()">保存</button>
+        <button id="toggleReadWrite">切换为编辑/查看状态</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+<script>
+  // 获取输入字段和按钮
+  var code = document.getElementById("teacherCodeForShow");
+  var tname = document.getElementById("teacherNameForShow");
+  var title = document.getElementById("teacherTitleForShow");
+  var entryTime = document.getElementById("teacherEntryTimeForShow");
+  var gender = document.getElementById("teacherGenderForShow");
+  var birth = document.getElementById("teacherBirthForShow");
+  var adress = document.getElementById("teacherAdressForShow");
+  var email = document.getElementById("teacherEmailForShow");
+  var phone = document.getElementById("teacherPhoneForShow");
+  var department = document.getElementById("teacherDepartmentForShow");
+  var salary = document.getElementById("teacherSalaryForShow");
+  var qualifications = document.getElementById("teacherQualificatonsForShow");
+
+
+  var toggleButton = document.getElementById("toggleReadWrite");
+  var saveButton = document.getElementById("saveChanges");
+
+  // 添加“切换编辑状态”按钮点击事件监听器
+  toggleButton.addEventListener("click", save);
+
+  function save() {
+    // 检查输入字段的只读属性
+    if (tname.readOnly) {
+      // 如果输入字段是只读的，切换为可写
+      tname.readOnly = false;
+      title.readOnly = false;
+      entryTime.readOnly = false;
+      gender.readOnly = false;
+      birth.readOnly = false;
+      adress.readOnly = false;
+      email.readOnly = false;
+      phone.readOnly = false;
+      department.readOnly = false;
+      salary.readOnly = false;
+      qualifications.readOnly = false;
+      // 显示保存按钮
+      saveButton.style.display = "inline";
+    } else {
+      // 如果输入字段是可写的，切换为只读
+      tname.readOnly = true;
+      title.readOnly = true;
+      entryTime.readOnly = true;
+      gender.readOnly = true;
+      birth.readOnly = true;
+      adress.readOnly = true;
+      email.readOnly = true;
+      phone.readOnly = true;
+      department.readOnly = true;
+      salary.readOnly = true;
+      qualifications.readOnly = true;
+      // 隐藏保存按钮
+      saveButton.style.display = "none";
+    }
+  }
+</script>
+
+<script>
+  function submitAddForm(){
+    var teacherCode = document.getElementById("teacherCode").value;
+    var teacherName = document.getElementById("teacherName").value;
+    var teacherDepartment = document.getElementById("teacherDepartment").value;
+    var teacherData = {
+      teacherCode: teacherCode,
+      teacherName: teacherName,
+      teacherDepartment:teacherDepartment
+    };
+
+    // 将 JavaScript 对象转换为 JSON 字符串
+    var jsonData = JSON.stringify(teacherData);
+
+    var headers = new Headers({
+      "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+    });
+
+    fetch("/manage/add_teacher", {
+      method: 'post',
+      headers: headers,
+      body: jsonData // 将 JSON 字符串作为请求的主体发送到服务器
+    }).then(
+            $('#addTeacherModal').modal('hide')
+
+    ).then(
+            teacherList(1)
+    )
+  }
+
+  function submitDeleteForm(){
+    var teacherCode = document.getElementById("teacherCodeForDelete").value;
+
+    // 将 JavaScript 对象转换为 JSON 字符串
+    var jsonData = JSON.stringify(teacherCode);
+
+    var headers = new Headers({
+      "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+    });
+
+    fetch("/manage/delete_teacher", {
+      method: 'post',
+      headers: headers,
+      body: jsonData // 将 JSON 字符串作为请求的主体发送到服务器
+    }).then(
+            $('#deleteTeacherModal').modal('hide')
+    ).then(
+            teacherList(1)
+    )
+  }
+  function submitUpdateForm(){
+    console.log(tname);
+    console.log(tname.value);
+    var teacherData = {
+      teacherCode: code.value,
+      teacherName: tname.value,
+      teacherTitle: title.value,
+      teacherEntryTime: entryTime.value,
+      teacherGender: gender.value,
+      teacherBirth: birth.value,
+      teacherAdress: adress.value,
+      teacherEmail: email.value,
+      teacherPhone: phone.value,
+      teacherDepartment: department.value,
+      teacherSalary: salary.value,
+      teacherQualifications: qualifications.value
+    }
+
+    // 将 JavaScript 对象转换为 JSON 字符串
+    var jsonData = JSON.stringify(teacherData);
+
+    var headers = new Headers({
+      "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+    });
+
+    fetch("/manage/update_teacher", {
+      method: 'post',
+      headers: headers,
+      body: jsonData // 将 JSON 字符串作为请求的主体发送到服务器
+    }).then(
+            teacherList(1)
+    ).then(
+            save()
+    ).then(data =>{
+      document.getElementById("saveChanges").style.display = "none";
+    })
+  }
+  function searchTeacher(){
+
+    var inputId = null;
+
+    inputId = document.getElementById("inputId").value;
+
+    // 将 JavaScript 对象转换为 JSON 字符串
+    var jsonData = JSON.stringify(inputId);
+
+    var headers = new Headers({
+      "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+    });
+
+    function openUpdateModal() {
+      $("#ShowTeacherModal").modal("show");
+    }
+
+    console.log(inputId);
+    if (inputId.trim() === "" || inputId.trim() === null){
+      alert("请输入要查询的教师编号")
+    }else {
+      document.getElementById("openUpdateModalButton").addEventListener("click", openUpdateModal);
+      document.getElementById("openUpdateModalButton").click();
+      fetch("/manage/search_teacher",{
+        method:'post',
+        headers: headers,
+        body: jsonData // 将 JSON 字符串作为请求的主体发送到服务器
+      }).then(response =>{
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      }).then(data =>{
+        code.value = data.data.teacherCode;
+        tname.value = data.data.teacherName;
+        title.value = data.data.teacherTitle;
+        entryTime.value = data.data.teacherEntryTime;
+        gender.value = data.data.teacherGender;
+        birth.value = data.data.teacherBirth;
+        adress.value = data.data.teacherAdress;
+        email.value = data.data.teacherEmail;
+        phone.value = data.data.teacherPhone;
+        department.value = data.data.teacherDepartment;
+        salary.value = data.data.teacherSalary;
+        qualifications.value = data.data.teacherQualificatons;
+      })
+      document.getElementById("openUpdateModalButton").removeEventListener("click", openUpdateModal);
+    }
+    }
+
+
+</script>
+
+<script>
+  teacherList(1)
+function teacherList(page)
+{
+  var cookieArr = document.cookie.split("; ")
+  console.log(cookieArr)
+  var token = null;
+  cookieArr.forEach(function(item,index){
+    //console.log("item:",item);
+    //console.log("index:",index);
+    if (item.substring(0,6) === "Token="){
+      //console.log(item.substring(0,6))
+      token = item.substring(6);
+      //console.log("item:",item);
+    }
+  })
+  // var token = cookieArr[0].substring(6)
+  // console.log(token)
+
+  var headers = new Headers({
+    "Content-Type": "application/json;charset=utf-8", // 设置Content-Type为application/json
+    "Token": token
+  });
+
+  var body = JSON.stringify({
+    "pageNum": page,
+    "pageSize": 10,
+    "totalNum": 0,
+    "pageCount": 0,
+    "limitIndex": 1,
+    "resultList": [
+      {}
+    ]
+  })
+
+  fetch("/manage/teacher-list", {
+    method: 'post',
+    headers: headers,
+    body:body
+  }).then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+
+  }).then(data => {
+
+    // 获取对应表格元素
+    var table = document.getElementById("data-table");
+
+// 创建表头
+    var tableHeader = "<tr><th>教师编号 </th><th>教师姓名 </th><th>教师职称 </th>" +
+            "<th>入职时间 </th><th>性别 </th><th>出生日期 </th><th>家庭地址 </th><th>邮箱 </th>" +
+            "<th>电话号码 </th><th>所属部门、院系 </th><th>薪水 </th><th>学历 </th></tr>";
+
+// 初始化表格内容
+    var tableContent = "";
+
+    var jsonData = data.data.resultList;
+    //console.log(data.data.resultList)
+
+    // var time = jsonData[0].teacherEntryTime
+    // console.log(time)
+    // console.log(new Date(time))
+    // console.log(new Date(time).toLocaleDateString())
+
+// 遍历 JSON 数据并将其添加到表格内容中
+    for (var i = 0; i < jsonData.length; i++) {
+      tableContent += "<tr>";
+      tableContent += "<td>" + jsonData[i].teacherCode + "</td>";
+      tableContent += "<td>" + jsonData[i].teacherName + "</td>";
+      tableContent += "<td>" + jsonData[i].teacherTitle + "</td>";
+      tableContent += "<td>" + new Date(jsonData[i].teacherEntryTime).toLocaleDateString() + "</td>";
+      tableContent += "<td>" + jsonData[i].teacherGender + "</td>";
+      tableContent += "<td>" + new Date(jsonData[i].teacherBirth).toLocaleDateString() + "</td>";
+      tableContent += "<td>" + jsonData[i].teacherAdress + "</td>";
+      tableContent += "<td>" + jsonData[i].teacherEmail + "</td>";
+      tableContent += "<td>" + jsonData[i].teacherPhone + "</td>";
+      tableContent += "<td>" + jsonData[i].teacherDepartment + "</td>";
+      tableContent += "<td>" + jsonData[i].teacherSalary + "</td>";
+      tableContent += "<td>" + jsonData[i].teacherQualificatons + "</td>";
+      tableContent += "</tr>";
+    }
+
+// 将表头和表格内容添加到表格中
+    table.innerHTML = tableHeader + tableContent;
+
+// 更新分页按钮
+    updatePagination(data.data.pageNum, data.data.pageCount);
+
+
+  })
+}
+
+  // 更新分页按钮
+  function updatePagination(currentPage, pageCount) {
+    var pagination = document.getElementById("pagination");
+    var paginationContent = "";
+
+    // 添加“上一页”按钮
+    if (currentPage > 1) {
+      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="teacherList(' + (currentPage - 1) + ')">上一页&nbsp;</a></li>';
+    }
+
+    // 添加页数按钮
+    for (var i = 1; i <= pageCount; i++) {
+      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="teacherList(' + i + ')">' + i + '&nbsp;</a></li>';
+    }
+
+    // 添加“下一页”按钮
+    if (currentPage < pageCount) {
+      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="teacherList(' + (currentPage + 1) + ')">&nbsp;下一页</a></li>';
+    }
+
+    pagination.innerHTML = " <td colspan=\"10\">" +
+            "<ul class=\"pagination\">"
+            +paginationContent+
+            "</ul>" +
+            "</td>";
+  }
+</script>
+</body>
+</html>

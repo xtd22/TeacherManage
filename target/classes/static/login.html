@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>登录页面</title>
+
+</head>
+<body>
+<!-- <form action = "" method="post" enctype="multipart/form-data"></form> -->
+
+
+    <div class="col-md-1"></div>
+	<div class="col-md-4">
+
+<!--		<form action="/user/login" method="post">-->
+			<h2>用户登录</h2>
+			<h1></h1>
+			<input type="text"  placeholder="请输入用户名" required autofocus name="userCode" id="userCode"/>
+			<div style="height:10px;clear: both;display: block"></div>
+			<input type="password"  placeholder="请输入密码" required name="userPwd" id="userPwd"/>
+			<button  >登录</button>
+			<button  onclick="login()">登录</button>
+
+<!--			<button class="btn btn-lg btn-primary btn-block" type="submit" content="application/json; charset=utf-8">登录</button>-->
+
+<!--		</form>-->
+
+	</div>
+
+
+<script language="javascript">
+	function login() {
+		var userCode = document.getElementById("userCode").value; // 获取用户输入的用户名
+		var userPwd = document.getElementById("userPwd").value;   // 获取用户输入的密码
+
+		// 创建一个包含用户名和密码的 JavaScript 对象
+		var userData = {
+			userCode: userCode,
+			userPwd: userPwd
+		};
+
+		// 将 JavaScript 对象转换为 JSON 字符串
+		var jsonData = JSON.stringify(userData);
+
+		var headers = new Headers({
+			"Content-Type": "application/json" // 设置Content-Type为application/json
+		});
+
+
+		console.log("aa")
+		// 发送 POST 请求到服务器
+		fetch("/user/login", {
+			method: 'post',
+			headers: headers,
+			body: jsonData // 将 JSON 字符串作为请求的主体发送到服务器
+		}).then(response => {
+			if (!response.ok) {
+				throw new Error("网络错误");
+			}
+			return response.json();
+			console.log('Data received:', response.json());
+			})
+				.then(function (data) {
+					console.log("成功响应：" + JSON.stringify(data));
+					if (data.code === 200){
+						var date = new Date();//获取时间戳  单位是毫秒
+						console.log(date.getTime());//getTime()获取时间戳的毫秒数 number
+						var expiresss = new Date(date.getTime()+1800*1000).toGMTString();//设置过期时间戳  即缓存时间
+						console.log(expiresss);
+						var token = data.data;
+						//写入cookie
+						document.cookie = 'Token='+ token +';expires='+expiresss;
+
+						localStorage.setItem("jwt", token);
+
+						window.location.href = "index.html";
+						// var headerss = new Headers({
+						// 	"Content-Type": "application/json", // 设置Content-Type为application/json
+						// 	"Token":token
+						// });
+						// fetch("/view/index", {
+						// 	method: 'post',
+						// 	headers: headerss,
+						// 	//body: {"token":token} // 将 JSON 字符串作为请求的主体发送到服务器
+						// })
+					}else {
+						alert(data.message)
+					}
+				})
+				.catch(function (error) {
+					console.error("发生错误：" + error.message);
+				});
+	}
+</script>
+
+</body>
+</html>
