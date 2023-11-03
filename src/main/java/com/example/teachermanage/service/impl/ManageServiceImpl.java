@@ -1,5 +1,6 @@
 package com.example.teachermanage.service.impl;
 
+import com.example.teachermanage.DTO.UpdateCourseDTO;
 import com.example.teachermanage.entity.*;
 import com.example.teachermanage.mapper.TeacherMapper;
 import com.example.teachermanage.mapper.UserMapper;
@@ -83,5 +84,24 @@ public class ManageServiceImpl implements ManageService {
 //            return Result.err(212,"更新失败（插入）");
 //        }
         return Result.ok("更新成功！");
+    }
+
+    @Override
+    public Result getHistory(String moudle, Page page) {
+        System.out.println("*****************");
+        System.out.println(moudle);
+        System.out.println(page);
+        if (moudle.equals("all")){
+            List<History> allHistory = teacherMapper.getAllHistoryByPage(page);
+            Integer count = teacherMapper.findHistoryRowCount();
+            page.setTotalNum(count);
+            page.setResultList(allHistory);
+            return Result.ok("查询成功！",page);
+        }
+        List<History> historyByMoudle = teacherMapper.getHistoryByMoudle(moudle, page);
+        Integer count = teacherMapper.findHistoryRowCountByMoudle(moudle);
+        page.setTotalNum(count);
+        page.setResultList(historyByMoudle);
+        return Result.ok("查询成功！",page);
     }
 }

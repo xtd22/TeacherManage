@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.teachermanage.mapper.HistoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.teachermanage.entity.History">
+            <id property="historyId" column="history_id" jdbcType="INTEGER"/>
+            <result property="historyMessage" column="history_message" jdbcType="VARCHAR"/>
+            <result property="hitoryMoudle" column="hitory_moudle" jdbcType="VARCHAR"/>
+            <result property="historyTime" column="history_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        history_id,history_message,hitory_moudle,
+        history_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from history
+        where  history_id = #{historyId,jdbcType=INTEGER} 
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from history
+        where  history_id = #{historyId,jdbcType=INTEGER} 
+    </delete>
+    <insert id="insert" keyColumn="history_id" keyProperty="historyId" parameterType="com.example.teachermanage.entity.History" useGeneratedKeys="true">
+        insert into history
+        ( history_id,history_message,hitory_moudle
+        ,history_time)
+        values (#{historyId,jdbcType=INTEGER},#{historyMessage,jdbcType=VARCHAR},#{hitoryMoudle,jdbcType=VARCHAR}
+        ,#{historyTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="history_id" keyProperty="historyId" parameterType="com.example.teachermanage.entity.History" useGeneratedKeys="true">
+        insert into history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="historyId != null">history_id,</if>
+                <if test="historyMessage != null">history_message,</if>
+                <if test="hitoryMoudle != null">hitory_moudle,</if>
+                <if test="historyTime != null">history_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="historyId != null">#{historyId,jdbcType=INTEGER},</if>
+                <if test="historyMessage != null">#{historyMessage,jdbcType=VARCHAR},</if>
+                <if test="hitoryMoudle != null">#{hitoryMoudle,jdbcType=VARCHAR},</if>
+                <if test="historyTime != null">#{historyTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.teachermanage.entity.History">
+        update history
+        <set>
+                <if test="historyMessage != null">
+                    history_message = #{historyMessage,jdbcType=VARCHAR},
+                </if>
+                <if test="hitoryMoudle != null">
+                    hitory_moudle = #{hitoryMoudle,jdbcType=VARCHAR},
+                </if>
+                <if test="historyTime != null">
+                    history_time = #{historyTime,jdbcType=TIMESTAMP},
+                </if>
+        </set>
+        where   history_id = #{historyId,jdbcType=INTEGER} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.teachermanage.entity.History">
+        update history
+        set 
+            history_message =  #{historyMessage,jdbcType=VARCHAR},
+            hitory_moudle =  #{hitoryMoudle,jdbcType=VARCHAR},
+            history_time =  #{historyTime,jdbcType=TIMESTAMP}
+        where   history_id = #{historyId,jdbcType=INTEGER} 
+    </update>
+</mapper>

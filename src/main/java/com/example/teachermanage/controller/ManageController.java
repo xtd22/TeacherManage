@@ -1,19 +1,17 @@
 package com.example.teachermanage.controller;
 
+import com.example.teachermanage.DTO.UpdateCourseDTO;
+import com.example.teachermanage.DTO.HistoryDTO;
 import com.example.teachermanage.entity.*;
 import com.example.teachermanage.mapper.TeacherMapper;
 import com.example.teachermanage.page.Page;
 import com.example.teachermanage.service.ManageService;
 import com.example.teachermanage.utils.Constants;
-import com.example.teachermanage.utils.TokenUtils;
-import com.example.teachermanage.vo.CourseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/manage")
@@ -66,6 +64,14 @@ public class ManageController {
     @RequestMapping("/update-course")
     public Result upadteCourse(@RequestBody UpdateCourseDTO updateCourseDTO){
         Result result = manageService.updateCourse(updateCourseDTO);
+        return result;
+    }
+
+    @RequestMapping("/history")
+    public Result history(@RequestBody HistoryDTO historyDTO){
+        System.out.println("-----------");
+        System.out.println(historyDTO);
+        Result result = manageService.getHistory(historyDTO.getMoudle(),historyDTO.getPage());
         return result;
     }
 }

@@ -1,9 +1,11 @@
 package com.example.teachermanage.mapper;
 
 import com.example.teachermanage.entity.Course;
+import com.example.teachermanage.entity.History;
 import com.example.teachermanage.entity.Teacher;
 import com.example.teachermanage.entity.TeacherCourse;
 import com.example.teachermanage.page.Page;
+import com.sun.source.doctree.HiddenTree;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -45,4 +47,12 @@ public interface TeacherMapper {
 
 
     Integer insertTeacherCourseByCode(@Param("teacherCode") String teacherCode, @Param("cid") Integer cid);
+
+    List<History> getAllHistoryByPage(@Param("page") Page page);
+
+    List<History> getHistoryByMoudle(@Param("moudle") String moudle,@Param("page") Page page);
+
+    Integer findHistoryRowCount();
+
+    Integer findHistoryRowCountByMoudle(@Param("moudle") String moudle);
 }
