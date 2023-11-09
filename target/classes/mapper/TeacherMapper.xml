@@ -50,9 +50,7 @@
     <select id="findTeacherRowCount" resultType="java.lang.Integer">
         select count(*) from teacher where is_delete = 0
     </select>
-    <select id="selectByTeacherCode" resultType="com.example.teachermanage.entity.Teacher">
-        select * from teacher where teacher_code = #{teacherCode}
-    </select>
+
     <select id="selectCourseByDepartment" resultType="com.example.teachermanage.entity.Course">
         select * from course where cid in (
             select cid from department_course where did in (
@@ -74,6 +72,9 @@
     </select>
     <select id="findHistoryRowCountByMoudle" resultType="java.lang.Integer">
         select count(*) from history where history_moudle = #{moudle}
+    </select>
+    <select id="selectByTeacherCode" resultType="com.example.teachermanage.entity.Teacher">
+        select * from teacher where teacher_code = #{teacherCode}
     </select>
 
 
@@ -209,7 +210,7 @@
         where   teacher_code = #{teacherCode}
     </update>
 
-    <update id="deleteTeacherByCode" parameterType="integer">
+    <update id="deleteTeacherByCode" parameterType="java.lang.String">
         update teacher set is_delete = 1 where teacher_code = #{teacherCode}
     </update>
 </mapper>

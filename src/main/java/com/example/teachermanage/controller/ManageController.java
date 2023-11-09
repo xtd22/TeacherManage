@@ -3,7 +3,6 @@ package com.example.teachermanage.controller;
 import com.example.teachermanage.DTO.UpdateCourseDTO;
 import com.example.teachermanage.DTO.HistoryDTO;
 import com.example.teachermanage.entity.*;
-import com.example.teachermanage.mapper.TeacherMapper;
 import com.example.teachermanage.page.Page;
 import com.example.teachermanage.service.ManageService;
 import com.example.teachermanage.utils.Constants;
@@ -16,9 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/manage")
 public class ManageController {
-
-    @Autowired
-    private TeacherMapper teacherMapper;
 
 
     @Autowired
@@ -37,21 +33,20 @@ public class ManageController {
     }
 
     @RequestMapping("/delete_teacher")
-    public Result deleteTeacher(@RequestBody Integer teacherCode){
-        teacherMapper.deleteTeacherByCode(teacherCode);
+    public Result deleteTeacher(@RequestBody String teacherCode){
+        manageService.deleteTeacher(teacherCode);
         return Result.ok("删除成功！");
     }
 
     @RequestMapping("/search_teacher")
     public Result searchTeacher(@RequestBody String teacherCode){
-        return Result.ok("查询成功！",teacherMapper.selectByTeacherCode(teacherCode));
+        Result result = manageService.searchTeacher(teacherCode);
+        return Result.ok("查询成功！",result);
     }
 
     @RequestMapping("/update_teacher")
     public Result updateTeacher(@RequestBody Teacher teacher){
-//        System.out.println("---------------------------------------------");
-//        System.out.println(teacher.toString());
-        teacherMapper.updateByTeacherCode(teacher);
+        manageService.updateTeacher(teacher);
         return Result.ok("更新成功！");
     }
 
@@ -69,8 +64,6 @@ public class ManageController {
 
     @RequestMapping("/history")
     public Result history(@RequestBody HistoryDTO historyDTO){
-        System.out.println("-----------");
-        System.out.println(historyDTO);
         Result result = manageService.getHistory(historyDTO.getMoudle(),historyDTO.getPage());
         return result;
     }

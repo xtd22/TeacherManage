@@ -104,4 +104,22 @@ public class ManageServiceImpl implements ManageService {
         page.setResultList(historyByMoudle);
         return Result.ok("查询成功！",page);
     }
+
+    @Override
+    public Result searchTeacher(String teacherCode) {
+        //String replace = teacherCode.replace("\"", "");
+        Teacher teacher = teacherMapper.selectByTeacherCode(teacherCode);
+        //System.out.println(teacherCode);
+        return Result.ok(teacher);
+    }
+
+    @Override
+    public void updateTeacher(Teacher teacher) {
+        teacherMapper.updateByTeacherCode(teacher);
+    }
+
+    @Override
+    public void deleteTeacher(String teacherCode) {
+        teacherMapper.deleteTeacherByCode(teacherCode);
+    }
 }
