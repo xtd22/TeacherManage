@@ -54,6 +54,9 @@ public class ManageServiceImpl implements ManageService {
 
     @Override
     public Result getCourse(Teacher teacher) {
+        if (teacher == null){
+            return Result.err(211,"没有该教师信息");
+        }
         if (teacher.getTeacherDepartment().equals("null")){
             return Result.err(210,"所属部门、院系不存在");
         }
@@ -103,5 +106,21 @@ public class ManageServiceImpl implements ManageService {
         page.setTotalNum(count);
         page.setResultList(historyByMoudle);
         return Result.ok("查询成功！",page);
+    }
+
+    @Override
+    public Result searchTeacher(String teacherCode) {
+        Teacher teacher = teacherMapper.selectByTeacherCode(teacherCode.replace("\"", ""));
+        return Result.ok(teacher);
+    }
+
+    @Override
+    public void updateTeacher(Teacher teacher) {
+        teacherMapper.updateByTeacherCode(teacher);
+    }
+
+    @Override
+    public void deleteTeacher(String teacherCode) {
+        teacherMapper.deleteTeacherByCode(teacherCode);
     }
 }

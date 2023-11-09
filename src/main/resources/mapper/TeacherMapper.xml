@@ -4,40 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.teachermanage.mapper.TeacherMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.teachermanage.entity.Teacher">
-            <id property="teacherId" column="teacher_id" jdbcType="INTEGER"/>
-            <result property="teacherCode" column="teacher_code" jdbcType="VARCHAR"/>
-            <result property="teacherPwd" column="teacher_pwd" jdbcType="VARCHAR"/>
-            <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
-            <result property="teacherTitle" column="teacher_title" jdbcType="VARCHAR"/>
-            <result property="teacherEntryTime" column="teacher_entry_time" jdbcType="TIMESTAMP"/>
-            <result property="teacherGender" column="teacher_gender" jdbcType="INTEGER"/>
-            <result property="teacherBirth" column="teacher_birth" jdbcType="TIMESTAMP"/>
-            <result property="teacherAdress" column="teacher_adress" jdbcType="VARCHAR"/>
-            <result property="teacherEmail" column="teacher_email" jdbcType="VARCHAR"/>
-            <result property="teacherPhone" column="teacher_phone" jdbcType="VARCHAR"/>
-            <result property="teacherDepartment" column="teacher_department" jdbcType="VARCHAR"/>
-            <result property="teacherSalary" column="teacher_salary" jdbcType="DECIMAL"/>
-            <result property="teacherPicture" column="teacher_picture" jdbcType="VARCHAR"/>
-            <result property="teacherQualifications" column="teacher_qualifications" jdbcType="VARCHAR"/>
-            <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
-    </resultMap>
 
-    <sql id="Base_Column_List">
-        teacher_id,teacher_code,teacher_pwd,
-        teacher_name,teacher_title,teacher_entry_time,
-        teacher_gender,teacher_birth,teacher_adress,
-        teacher_email,teacher_phone,teacher_department,
-        teacher_salary,teacher_picture,teacher_qualifications,
-        is_delete
-    </sql>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from teacher
-        where  teacher_id = #{teacherId,jdbcType=INTEGER} 
-    </select>
     <select id="selectAllByPage" resultType="com.example.teachermanage.entity.Teacher">
         select teacher_code,teacher_name,teacher_title,teacher_entry_time,
                teacher_gender,teacher_birth,teacher_adress,teacher_email,
@@ -50,16 +18,14 @@
     <select id="findTeacherRowCount" resultType="java.lang.Integer">
         select count(*) from teacher where is_delete = 0
     </select>
-    <select id="selectByTeacherCode" resultType="com.example.teachermanage.entity.Teacher">
-        select * from teacher where teacher_code = #{teacherCode}
-    </select>
+
     <select id="selectCourseByDepartment" resultType="com.example.teachermanage.entity.Course">
         select * from course where cid in (
             select cid from department_course where did in (
                 select did from department where department = #{teacherDepartment}))
     </select>
     <select id="queryTeacherCourseByTeacherCode" resultType="java.lang.Integer">
-        select cid from teacher_course where teacher_code = #{teacherCode}
+        select cid from teacher_course where teacher_code = 1
     </select>
     <select id="getAllHistoryByPage" resultType="com.example.teachermanage.entity.History">
         select * from history
@@ -74,6 +40,9 @@
     </select>
     <select id="findHistoryRowCountByMoudle" resultType="java.lang.Integer">
         select count(*) from history where history_moudle = #{moudle}
+    </select>
+    <select id="selectByTeacherCode" resultType="teacher">
+        select * from teacher where teacher_code = #{teacherCode}
     </select>
 
 
@@ -99,99 +68,11 @@
         ,#{teacherSalary,jdbcType=DECIMAL},#{teacherQualifications,jdbcType=VARCHAR}
         ,0)
     </insert>
-    <insert id="insertSelective" keyColumn="teacher_id" keyProperty="teacherId" parameterType="com.example.teachermanage.entity.Teacher" useGeneratedKeys="true">
-        insert into teacher
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-                <if test="teacherId != null">teacher_id,</if>
-                <if test="teacherCode != null">teacher_code,</if>
-                <if test="teacherPwd != null">teacher_pwd,</if>
-                <if test="teacherName != null">teacher_name,</if>
-                <if test="teacherTitle != null">teacher_title,</if>
-                <if test="teacherEntryTime != null">teacher_entry_time,</if>
-                <if test="teacherGender != null">teacher_gender,</if>
-                <if test="teacherBirth != null">teacher_birth,</if>
-                <if test="teacherAdress != null">teacher_adress,</if>
-                <if test="teacherEmail != null">teacher_email,</if>
-                <if test="teacherPhone != null">teacher_phone,</if>
-                <if test="teacherDepartment != null">teacher_department,</if>
-                <if test="teacherSalary != null">teacher_salary,</if>
-                <if test="teacherPicture != null">teacher_picture,</if>
-                <if test="teacherQualifications != null">teacher_qualifications,</if>
-                <if test="isDelete != null">is_delete,</if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-                <if test="teacherId != null">#{teacherId,jdbcType=INTEGER},</if>
-                <if test="teacherCode != null">#{teacherCode,jdbcType=VARCHAR},</if>
-                <if test="teacherPwd != null">#{teacherPwd,jdbcType=VARCHAR},</if>
-                <if test="teacherName != null">#{teacherName,jdbcType=VARCHAR},</if>
-                <if test="teacherTitle != null">#{teacherTitle,jdbcType=VARCHAR},</if>
-                <if test="teacherEntryTime != null">#{teacherEntryTime,jdbcType=TIMESTAMP},</if>
-                <if test="teacherGender != null">#{teacherGender,jdbcType=INTEGER},</if>
-                <if test="teacherBirth != null">#{teacherBirth,jdbcType=TIMESTAMP},</if>
-                <if test="teacherAdress != null">#{teacherAdress,jdbcType=VARCHAR},</if>
-                <if test="teacherEmail != null">#{teacherEmail,jdbcType=VARCHAR},</if>
-                <if test="teacherPhone != null">#{teacherPhone,jdbcType=VARCHAR},</if>
-                <if test="teacherDepartment != null">#{teacherDepartment,jdbcType=VARCHAR},</if>
-                <if test="teacherSalary != null">#{teacherSalary,jdbcType=DECIMAL},</if>
-                <if test="teacherPicture != null">#{teacherPicture,jdbcType=VARCHAR},</if>
-                <if test="teacherQualifications != null">#{teacherQualifications,jdbcType=VARCHAR},</if>
-                <if test="isDelete != null">#{isDelete,jdbcType=INTEGER},</if>
-        </trim>
-    </insert>
+
     <insert id="insertTeacherCourseByCode">
         INSERT INTO teacher_course VALUES(#{teacherCode},#{cid})
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.example.teachermanage.entity.Teacher">
-        update teacher
-        <set>
-                <if test="teacherCode != null">
-                    teacher_code = #{teacherCode,jdbcType=VARCHAR},
-                </if>
-                <if test="teacherPwd != null">
-                    teacher_pwd = #{teacherPwd,jdbcType=VARCHAR},
-                </if>
-                <if test="teacherName != null">
-                    teacher_name = #{teacherName,jdbcType=VARCHAR},
-                </if>
-                <if test="teacherTitle != null">
-                    teacher_title = #{teacherTitle,jdbcType=VARCHAR},
-                </if>
-                <if test="teacherEntryTime != null">
-                    teacher_entry_time = #{teacherEntryTime,jdbcType=TIMESTAMP},
-                </if>
-                <if test="teacherGender != null">
-                    teacher_gender = #{teacherGender,jdbcType=INTEGER},
-                </if>
-                <if test="teacherBirth != null">
-                    teacher_birth = #{teacherBirth,jdbcType=TIMESTAMP},
-                </if>
-                <if test="teacherAdress != null">
-                    teacher_adress = #{teacherAdress,jdbcType=VARCHAR},
-                </if>
-                <if test="teacherEmail != null">
-                    teacher_email = #{teacherEmail,jdbcType=VARCHAR},
-                </if>
-                <if test="teacherPhone != null">
-                    teacher_phone = #{teacherPhone,jdbcType=VARCHAR},
-                </if>
-                <if test="teacherDepartment != null">
-                    teacher_department = #{teacherDepartment,jdbcType=VARCHAR},
-                </if>
-                <if test="teacherSalary != null">
-                    teacher_salary = #{teacherSalary,jdbcType=DECIMAL},
-                </if>
-                <if test="teacherPicture != null">
-                    teacher_picture = #{teacherPicture,jdbcType=VARCHAR},
-                </if>
-                <if test="teacherQualifications != null">
-                    teacher_qualifications = #{teacherQualifications,jdbcType=VARCHAR},
-                </if>
-                <if test="isDelete != null">
-                    is_delete = #{isDelete,jdbcType=INTEGER},
-                </if>
-        </set>
-        where   teacher_id = #{teacherId,jdbcType=INTEGER} 
-    </update>
+
     <update id="updateByTeacherCode" parameterType="com.example.teachermanage.entity.Teacher">
         update teacher
         set
@@ -209,7 +90,7 @@
         where   teacher_code = #{teacherCode}
     </update>
 
-    <update id="deleteTeacherByCode" parameterType="integer">
+    <update id="deleteTeacherByCode" parameterType="java.lang.String">
         update teacher set is_delete = 1 where teacher_code = #{teacherCode}
     </update>
 </mapper>

@@ -33,7 +33,7 @@ public interface TeacherMapper {
 
     List<Teacher> selectAllByPage(@Param("page") Page page);
 
-    int deleteTeacherByCode(Integer teahcerCode);
+    int deleteTeacherByCode(String teahcerCode);
 
     Integer findTeacherRowCount();
 

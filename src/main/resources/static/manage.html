@@ -432,19 +432,23 @@
           throw new Error('Network response was not ok');
         }
         return response.json();
-      }).then(data =>{
-        code.value = data.data.teacherCode;
-        tname.value = data.data.teacherName;
-        title.value = data.data.teacherTitle;
-        entryTime.value = data.data.teacherEntryTime;
-        gender.value = data.data.teacherGender;
-        birth.value = data.data.teacherBirth;
-        adress.value = data.data.teacherAdress;
-        email.value = data.data.teacherEmail;
-        phone.value = data.data.teacherPhone;
-        department.value = data.data.teacherDepartment;
-        salary.value = data.data.teacherSalary;
-        qualifications.value = data.data.teacherQualificatons;
+      }).then(responseData => {
+        const data = responseData.data.data; // 注意这里取得嵌套的 data 属性
+
+        // 在这里检查 data 是否包含正确的属性
+
+        code.value = data.teacherCode;
+        tname.value = data.teacherName;
+        title.value = data.teacherTitle;
+        entryTime.value = data.teacherEntryTime;
+        gender.value = data.teacherGender;
+        birth.value = data.teacherBirth;
+        adress.value = data.teacherAdress;
+        email.value = data.teacherEmail;
+        phone.value = data.teacherPhone;
+        department.value = data.teacherDepartment;
+        salary.value = data.teacherSalary;
+        qualifications.value = data.teacherQualifications
       })
       document.getElementById("openUpdateModalButton").removeEventListener("click", openUpdateModal);
     }

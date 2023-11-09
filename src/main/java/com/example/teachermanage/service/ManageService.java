@@ -16,4 +16,10 @@ public interface ManageService {
     Result updateCourse(UpdateCourseDTO updateCourseDTO);
 
     Result getHistory(String moudle, Page page);
+
+    Result searchTeacher(String teacherCode);
+
+    void updateTeacher(Teacher teacher);
+
+    void deleteTeacher(String teacherCode);
 }
