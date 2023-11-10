@@ -105,13 +105,14 @@
           throw new Error('Network response was not ok');
         }
         return response.json();
-      }).then(data =>{
+      }).then(responseData => {
+        const data = responseData.data.data;
         if (data.data === null){
           alert("请输入正确的教师编号")
         }else{
-          var code = data.data.teacherCode;
-          var tname = data.data.teacherName;
-          var td = data.data.teacherDepartment;
+          var code = data.teacherCode;
+          var tname = data.teacherName;
+          var td = data.teacherDepartment;
           console.log(code,tname,td);
           openModal(code,tname,td);
         }
