@@ -125,6 +125,19 @@
 
 <script>
 function updateTeacherCourse(){
+  var cookieArr = document.cookie.split("; ")
+  console.log(cookieArr)
+  var token = null;
+  cookieArr.forEach(function(item,index){
+    //console.log("item:",item);
+    //console.log("index:",index);
+    if (item.substring(0,6) === "Token="){
+      //console.log(item.substring(0,6))
+      token = item.substring(6);
+      //console.log("item:",item);
+    }
+  })
+
   var teacherCode = document.getElementById("modalTeacherCode").textContent;
   //console.log("教师编号："+teacherCode);
 
@@ -148,7 +161,8 @@ function updateTeacherCourse(){
   var jsonData = JSON.stringify(tData);
 
   var headers = new Headers({
-    "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+    "Content-Type": "application/json;charset=utf-8",// 设置Content-Type为application/json
+    "Token": token
   });
 
   // 打印选中的课程值
@@ -350,9 +364,9 @@ function updateTeacherCourse(){
         input.type = "checkbox";
         input.name = "courses[]"; // 为了提交选定的课程
         input.value = course.cid;
-        // console.log("courses:"+input.value)
-        // console.log("teacherCourses:"+cid)
+        console.log("courses:"+input.value)
         teacherCourses.forEach(cid =>{
+          console.log("teacherCourses:"+cid)
           if (input.value===String(cid)){
             input.checked = true;
           }

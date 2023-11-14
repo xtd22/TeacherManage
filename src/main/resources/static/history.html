@@ -159,30 +159,30 @@
       table.innerHTML = tableHeader + tableContent;
 
 // 更新分页按钮
-      updatePagination(data.data.pageNum, data.data.pageCount);
+      updatePagination(data.data.pageNum, data.data.pageCount,moudle);
 
 
     })
   }
 
   // 更新分页按钮
-  function updatePagination(currentPage, pageCount) {
+  function updatePagination(currentPage, pageCount,moudle) {
     var pagination = document.getElementById("pagination");
     var paginationContent = "";
 
     // 添加“上一页”按钮
     if (currentPage > 1) {
-      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="historyList(' + (currentPage - 1) + ')">上一页&nbsp;</a></li>';
+      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="historyList(' + (currentPage - 1) + ','+moudle+')">上一页&nbsp;</a></li>';
     }
 
     // 添加页数按钮
     for (var i = 1; i <= pageCount; i++) {
-      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="historyList(' + i + ')">' + i + '&nbsp;</a></li>';
+      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="historyList(' + i + ','+moudle+')">' + i + '&nbsp;</a></li>';
     }
 
     // 添加“下一页”按钮
     if (currentPage < pageCount) {
-      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="historyList(' + (currentPage + 1) + ')">&nbsp;下一页</a></li>';
+      paginationContent += '<li><a style="font-size: 24px" href="javascript:void(0);" onclick="historyList(' + (currentPage + 1) + ','+moudle+')">&nbsp;下一页</a></li>';
     }
 
     pagination.innerHTML = " <td colspan=\"10\">" +

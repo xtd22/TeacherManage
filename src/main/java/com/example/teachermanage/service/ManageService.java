@@ -22,4 +22,12 @@ public interface ManageService {
     void updateTeacher(Teacher teacher);
 
     void deleteTeacher(String teacherCode);
+
+    void addTeacherHistory(String token, Teacher teacher);
+
+    void deleteTeacherHistory(String token, String teacherCode);
+
+    void updateTeacherHistory(String token, Teacher teacher);
+
+    void updateCourseHistory(String token,UpdateCourseDTO updateCourseDTO);
 }

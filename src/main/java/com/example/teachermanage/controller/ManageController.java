@@ -27,14 +27,16 @@ public class ManageController {
     }
 
     @RequestMapping("/add_teacher")
-    public Result addTeacher(@RequestBody Teacher teacher){
+    public Result addTeacher(@RequestHeader(Constants.HEADER_TOKEN_NAME) String token,@RequestBody Teacher teacher){
         manageService.addTeacher(teacher);
+        manageService.addTeacherHistory(token,teacher);
         return Result.ok("添加成功！");
     }
 
     @RequestMapping("/delete_teacher")
-    public Result deleteTeacher(@RequestBody String teacherCode){
+    public Result deleteTeacher(@RequestHeader(Constants.HEADER_TOKEN_NAME) String token,@RequestBody String teacherCode){
         manageService.deleteTeacher(teacherCode);
+        manageService.deleteTeacherHistory(token,teacherCode);
         return Result.ok("删除成功！");
     }
 
@@ -45,8 +47,9 @@ public class ManageController {
     }
 
     @RequestMapping("/update_teacher")
-    public Result updateTeacher(@RequestBody Teacher teacher){
+    public Result updateTeacher(@RequestHeader(Constants.HEADER_TOKEN_NAME) String token,@RequestBody Teacher teacher){
         manageService.updateTeacher(teacher);
+        manageService.updateTeacherHistory(token,teacher);
         return Result.ok("更新成功！");
     }
 
@@ -57,8 +60,9 @@ public class ManageController {
     }
 
     @RequestMapping("/update-course")
-    public Result upadteCourse(@RequestBody UpdateCourseDTO updateCourseDTO){
+    public Result upadteCourse(@RequestHeader(Constants.HEADER_TOKEN_NAME) String token,@RequestBody UpdateCourseDTO updateCourseDTO){
         Result result = manageService.updateCourse(updateCourseDTO);
+        manageService.updateCourseHistory(token,updateCourseDTO);
         return result;
     }
 

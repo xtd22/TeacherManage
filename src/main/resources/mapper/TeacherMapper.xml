@@ -25,7 +25,7 @@
                 select did from department where department = #{teacherDepartment}))
     </select>
     <select id="queryTeacherCourseByTeacherCode" resultType="java.lang.Integer">
-        select cid from teacher_course where teacher_code = 1
+        select cid from teacher_course where teacher_code = #{teacherCode}
     </select>
     <select id="getAllHistoryByPage" resultType="com.example.teachermanage.entity.History">
         select * from history
@@ -72,6 +72,22 @@
     <insert id="insertTeacherCourseByCode">
         INSERT INTO teacher_course VALUES(#{teacherCode},#{cid})
     </insert>
+    <insert id="addTeacherMessage">
+        insert into history values (null,CONCAT("用户:",#{userName}," 添加了教师编号为：",#{teacherCode}," 的教师信息"),"教师管理",now())
+    </insert>
+
+    <insert id="deleteTeacherMessage">
+        insert into history values (null,CONCAT("用户:",#{userName}," 删除了教师编号为：",#{teacherCode}," 的教师信息"),"教师管理",now())
+    </insert>
+
+    <insert id="updateTeacherMessage">
+        insert into history values (null,CONCAT("用户:",#{userName}," 修改了教师编号为：",#{teacherCode}," 的教师信息"),"教师管理",now())
+    </insert>
+
+    <insert id="updateCourseMessage">
+        insert into history values (null,CONCAT("用户:",#{userName}," 为教师编号为：",#{teacherCode}," 的教师分配了课程"),"课程分配",now())
+    </insert>
+
 
     <update id="updateByTeacherCode" parameterType="com.example.teachermanage.entity.Teacher">
         update teacher

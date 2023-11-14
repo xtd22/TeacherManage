@@ -23,12 +23,6 @@ public interface TeacherMapper {
 
     int insert(Teacher record);
 
-    int insertSelective(Teacher record);
-
-    Teacher selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(Teacher record);
-
     int updateByTeacherCode(Teacher record);
 
     List<Teacher> selectAllByPage(@Param("page") Page page);
@@ -55,4 +49,12 @@ public interface TeacherMapper {
     Integer findHistoryRowCount();
 
     Integer findHistoryRowCountByMoudle(@Param("moudle") String moudle);
+
+    void addTeacherMessage(@Param("userName") String userName, @Param("teacherCode") String teacherCode);
+
+    void deleteTeacherMessage(@Param("userName") String userName, @Param("teacherCode") String teacherCode);
+
+    void updateTeacherMessage(@Param("userName") String userName, @Param("teacherCode") String teacherCode);
+
+    void updateCourseMessage(@Param("userName") String userName, @Param("teacherCode") String teacherCode);
 }

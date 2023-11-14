@@ -10,6 +10,7 @@ import com.example.teachermanage.utils.TokenUtils;
 import com.example.teachermanage.vo.CourseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class ManageServiceImpl implements ManageService {
         if (teacher == null){
             return Result.err(211,"没有该教师信息");
         }
-        if (teacher.getTeacherDepartment().equals("null")){
+        if (teacher.getTeacherDepartment().equals("null") || teacher.getTeacherDepartment().isEmpty()){
             return Result.err(210,"所属部门、院系不存在");
         }
         String teacherDepartment = teacher.getTeacherDepartment();
@@ -71,6 +72,7 @@ public class ManageServiceImpl implements ManageService {
     }
 
     @Override
+    @Transactional
     public Result updateCourse(UpdateCourseDTO updateCourseDTO) {
         String teacherCode = updateCourseDTO.getTeacherCode();
         List<Integer> courses = updateCourseDTO.getCourses();
@@ -80,6 +82,7 @@ public class ManageServiceImpl implements ManageService {
 //        if (i==0){
 //            return Result.err(211,"更新失败（删除）");
 //        }
+        teacherMapper.deleteTeacherCourseByCode(teacherCode);
         for (Integer cid: courses) {
             i += teacherMapper.insertTeacherCourseByCode(teacherCode,cid);
         }
@@ -121,6 +124,33 @@ public class ManageServiceImpl implements ManageService {
 
     @Override
     public void deleteTeacher(String teacherCode) {
-        teacherMapper.deleteTeacherByCode(teacherCode);
+        teacherMapper.deleteTeacherByCode(teacherCode.replace("\"", ""));
+    }
+
+    @Override
+    public void addTeacherHistory(String token, Teacher teacher) {
+        String userName = tokenUtils.getCurrentUser(token).getUserName();
+        String teacherCode = teacher.getTeacherCode();
+        teacherMapper.addTeacherMessage(userName,teacherCode);
+}
+
+    @Override
+    public void deleteTeacherHistory(String token, String teacherCode) {
+        String userName = tokenUtils.getCurrentUser(token).getUserName();
+        teacherMapper.deleteTeacherMessage(userName,teacherCode.replace("\"", ""));
+    }
+
+    @Override
+    public void updateTeacherHistory(String token, Teacher teacher) {
+        String userName = tokenUtils.getCurrentUser(token).getUserName();
+        String teacherCode = teacher.getTeacherCode();
+        teacherMapper.updateTeacherMessage(userName,teacherCode);
+    }
+
+    @Override
+    public void updateCourseHistory(String token, UpdateCourseDTO updateCourseDTO) {
+        String userName = tokenUtils.getCurrentUser(token).getUserName();
+        String teacherCode = updateCourseDTO.getTeacherCode();
+        teacherMapper.updateCourseMessage(userName,teacherCode);
     }
 }
