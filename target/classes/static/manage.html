@@ -21,7 +21,6 @@
         <li ><a href="/index.html">主页</a></li>
         <li class="active"><a href="/manage.html">教师管理</a></li>
         <li class="active"><a href="/course.html">课程分配</a></li>
-        <li class="active"><a href="/">消息通知</a></li>
         <li class="active"><a href="/history.html">操作记录</a></li>
       </ul>
     </div>
@@ -314,6 +313,19 @@
 </script>
 
 <script>
+  var cookieArr = document.cookie.split("; ")
+  console.log(cookieArr)
+  var token = null;
+  cookieArr.forEach(function(item,index){
+    //console.log("item:",item);
+    //console.log("index:",index);
+    if (item.substring(0,6) === "Token="){
+      //console.log(item.substring(0,6))
+      token = item.substring(6);
+      //console.log("item:",item);
+    }
+  })
+
   function submitAddForm(){
     var teacherCode = document.getElementById("teacherCode").value;
     var teacherName = document.getElementById("teacherName").value;
@@ -328,7 +340,8 @@
     var jsonData = JSON.stringify(teacherData);
 
     var headers = new Headers({
-      "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+      "Content-Type": "application/json;charset=utf-8",// 设置Content-Type为application/json
+      "Token": token
     });
 
     fetch("/manage/add_teacher", {
@@ -350,7 +363,8 @@
     var jsonData = JSON.stringify(teacherCode);
 
     var headers = new Headers({
-      "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+      "Content-Type": "application/json;charset=utf-8",// 设置Content-Type为application/json
+      "Token": token
     });
 
     fetch("/manage/delete_teacher", {
@@ -385,7 +399,8 @@
     var jsonData = JSON.stringify(teacherData);
 
     var headers = new Headers({
-      "Content-Type": "application/json;charset=utf-8" // 设置Content-Type为application/json
+      "Content-Type": "application/json;charset=utf-8",// 设置Content-Type为application/json
+      "Token": token
     });
 
     fetch("/manage/update_teacher", {

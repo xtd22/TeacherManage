@@ -1,0 +1,22 @@
+
+t
+java:S1488-"^Immediately return this expression instead of assigning it to the temporary variable "result".(Ü¶ÖØ
+y
+java:S14881"^Immediately return this expression instead of assigning it to the temporary variable "result".(¾Ñ‹ªûÿÿÿÿ
+y
+java:S14884"^Immediately return this expression instead of assigning it to the temporary variable "result".(ˆ½Õöùÿÿÿÿ
+X
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ
+X
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ
+X
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ
+V	java:S125E"<This block of commented-out lines of code should be removed.(ŒÔ´úÿÿÿÿ
+V	java:S125O"<This block of commented-out lines of code should be removed.(ŒÔ´úÿÿÿÿ
+<
+java:S1481P"&Remove this unused "i" local variable.(¡èûæ
+Q	java:S125Q"<This block of commented-out lines of code should be removed.(Ö×•£
+Q	java:S125Y"<This block of commented-out lines of code should be removed.(ƒ›û’
+E	java:S106a"+Replace this use of System.out by a logger.(Ÿ‰û§şÿÿÿÿ
+E	java:S106b"+Replace this use of System.out by a logger.(öóœ¼úÿÿÿÿ
+@	java:S106c"+Replace this use of System.out by a logger.(Ô÷è

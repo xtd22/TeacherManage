@@ -41,9 +41,7 @@
     <select id="findHistoryRowCountByMoudle" resultType="java.lang.Integer">
         select count(*) from history where history_moudle = #{moudle}
     </select>
-
-
-    <select id="selectByTeacherCode" resultType="com.example.teachermanage.entity.Teacher">
+    <select id="selectByTeacherCode" resultType="teacher">
         select * from teacher where teacher_code = #{teacherCode}
     </select>
 
@@ -74,6 +72,22 @@
     <insert id="insertTeacherCourseByCode">
         INSERT INTO teacher_course VALUES(#{teacherCode},#{cid})
     </insert>
+    <insert id="addTeacherMessage">
+        insert into history values (null,CONCAT("用户:",#{userName}," 添加了教师编号为：",#{teacherCode}," 的教师信息"),"教师管理",now())
+    </insert>
+
+    <insert id="deleteTeacherMessage">
+        insert into history values (null,CONCAT("用户:",#{userName}," 删除了教师编号为：",#{teacherCode}," 的教师信息"),"教师管理",now())
+    </insert>
+
+    <insert id="updateTeacherMessage">
+        insert into history values (null,CONCAT("用户:",#{userName}," 修改了教师编号为：",#{teacherCode}," 的教师信息"),"教师管理",now())
+    </insert>
+
+    <insert id="updateCourseMessage">
+        insert into history values (null,CONCAT("用户:",#{userName}," 为教师编号为：",#{teacherCode}," 的教师分配了课程"),"课程分配",now())
+    </insert>
+
 
     <update id="updateByTeacherCode" parameterType="com.example.teachermanage.entity.Teacher">
         update teacher
